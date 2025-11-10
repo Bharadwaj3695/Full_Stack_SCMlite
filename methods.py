@@ -1,70 +1,40 @@
 from typing import Union
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
-from pymongo import MongoClient
-from dotenv import load_dotenv
-import os
 
-#  Load Environment Variables
+from fastapi import FastAPI
 
-load_dotenv()
+from pydantic import BaseModel
 
-#  Get MongoDB credentials from .env (or use defaults)
+app = FastAPI()
 
-# Get environment variables
-MONGO_URI = os.getenv("MONGO_URI")
-MONGO_DB = os.getenv("MONGO_DB")       # your database name
 
-#  Connect to MongoDB
-client = MongoClient(MONGO_URI)
-db = client[MONGO_DB]
-
-#  Access the "users" collection
-users_collection = db["users"]
-
-# Initialize FastAPI
-app = FastAPI(title="FastAPI MongoDB Demo", version="1.0")
-
-#  Root Route - Check Connection
 @app.get("/")
 def read_root():
-    return {"message": f"Connected successfully to MongoDB database '{MONGO_DB}'"}
+    return {"Hello": "World"}
 
 
-@app.get("/hi")
-def say_hello():
-    return {"Hello": "hi", "database": MONGO_DB}
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: Union[str, None] = None):
+    return {"item_id": item_id, "q": q}
 
-@app.get("/login")
-def login(email: str, password: str):
-    #  Validate email format
-    if "@" not in email:
-        raise HTTPException(status_code=400, detail="Invalid email format")
+@app.post("/login")
+def login(username,password):
+    print(username,password)
+    return {"message": "login page"}
 
-    #  Check if user exists in DB
-    user = users_collection.find_one({"email": email, "password": password})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found or wrong password")
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: Union[bool, None] = None
 
-    return {"message": f"Welcome, {email}!"}
+@app.put("/items/{item_id}")
+def update_item(item_id: int, item: Item):
+    return {"item_name": item.name, "item_id": item_id}
 
-@app.post("/add_user")
-def add_user(name: str, email: str, password: str):
-    # Email validation
-    if "@" not in email:
-        raise HTTPException(status_code=400, detail="Invalid email address")
+@app.patch("/items/{item_id}")
+def patch_item(item_id: int, item: dict):
+    return {"message": f"Item {item_id} partially updated", "item": item}
 
-    #  Check if user already exists
-    if users_collection.find_one({"email": email}):
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    #  Insert into MongoDB
-    user = {"name": name, "email": email, "password": password}
-    users_collection.insert_one(user)
-
-    return {"message": "User added successfully", "user": {"name": name, "email": email}}
-
-@app.get("/test_db")
-def test_db():
-    collections = db.list_collection_names()
-    return {"connected_to": MONGO_DB, "collections": collections}
+# DELETE method - delete data
+@app.delete("/items/{item_id}")
+def delete_item(item_id: int):
+    return {"message": f"Item {item_id} deleted"}

@@ -2,39 +2,32 @@ from typing import Union
 
 from fastapi import FastAPI
 
-from pydantic import BaseModel
-
+from fastapi.responses import JSONResponse
+from pymongo import MongoClient
 app = FastAPI()
 
+@app.get("/hi")
+def login(email:str,password:str):
+    if "@" not in email:
+        return {"message": "invalid email"}
+
+@app.get("/hi")
+def root():
+    return {"Hello": "hi"}
+
+client = MongoClient("mongodb://localhost:27017")  # replace with your Mongo URI
+db = client["mydatabase"]  # your database name
+
+users_collection = db["users"]
+shipments_collection = db["shipments"]
+devices_collection = db["device_data"]
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"message": "Connected to MongoDB successfully!"}
 
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-@app.post("/login")
-def login(username,password):
-    print(username,password)
-    return {"message": "login page"}
-
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
-
-@app.patch("/items/{item_id}")
-def patch_item(item_id: int, item: dict):
-    return {"message": f"Item {item_id} partially updated", "item": item}
-
-# DELETE method - delete data
-@app.delete("/items/{item_id}")
-def delete_item(item_id: int):
-    return {"message": f"Item {item_id} deleted"}
+@app.post("/add_user")
+def add_user(name: str, email: str):
+    user = {"name": name, "email": email}
+    users_collection.insert_one(user)
+    return {"message": "User added successfully", "user": user}
