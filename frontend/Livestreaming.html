@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SCMXpertLite – Live Streaming Data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Font (same as other themed pages) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg-light: #f4f7fb;
+      --card-bg: #ffffff;
+      --primary-blue: #0ea5e9;  /* light blue */
+      --accent-green: #22c55e;  /* green accent */
+      --dark: #111827;          /* light black */
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
+      --radius-xl: 22px;
+      --transition-fast: 0.25s ease;
+    }
+
+    /* ===== Global ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #e0f2fe, #f4f7fb);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      color: var(--dark);
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* ===== Main Card Container ===== */
+    .dashboard-container {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      padding: 26px 32px 34px;
+      animation: fadeIn 0.5s ease-out;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .dashboard-container::before {
+      content: "";
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(14,165,233,0.22), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Top Navigation Bar ===== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+      gap: 20px;
+    }
+
+    .brand img {
+      height: 54px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35);
+      object-fit: cover;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-menu a,
+    .logout-btn {
+      color: var(--dark);
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: #f9fafb;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      transition:
+        background var(--transition-fast),
+        color var(--transition-fast),
+        transform 0.18s ease,
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .nav-menu a i,
+    .logout-btn i {
+      font-size: 0.9rem;
+    }
+
+    .nav-menu a:hover,
+    .logout-btn:hover {
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+      color: #ffffff;
+      transform: translateY(-1px);
+      border-color: transparent;
+      box-shadow: 0 12px 25px rgba(15, 23, 42, 0.32);
+    }
+
+    .nav-menu a.active {
+      background: linear-gradient(135deg, var(--dark), #1f2933);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.45);
+    }
+
+    .logout-btn {
+      border: none;
+    }
+
+    /* ===== Page Header ===== */
+    .content-header {
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content-header h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--dark);
+      position: relative;
+    }
+
+    .content-header h1::before {
+      content: "";
+      width: 8px;
+      height: 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+    }
+
+    .content-header h1 i {
+      font-size: 1.3rem;
+      color: var(--primary-blue);
+    }
+
+    .content-header p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ===== Card (Table) ===== */
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 18px 18px 20px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+      animation: cardIn 0.5s ease-out forwards;
+      opacity: 0;
+      transform: translateY(6px);
+      position: relative;
+      z-index: 1;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 55%);
+      pointer-events: none;
+    }
+
+    @keyframes cardIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-header h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: rgba(14,165,233,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.06);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .icon-circle i {
+      font-size: 1.2rem;
+      color: var(--primary-blue);
+    }
+
+    /* ===== Table ===== */
+    .table-wrapper {
+      max-height: 500px;
+      overflow: auto;
+      border-radius: 14px;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: linear-gradient(90deg, #e5f2ff 0%, #f3f4ff 100%);
+      box-shadow: 0 2px 0 rgba(148, 163, 184, 0.4);
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #dde2f0;
+      text-align: left;
+    }
+
+    th {
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--dark);
+      letter-spacing: .04em;
+    }
+
+    tbody tr:nth-child(odd)  { background: #f5f7fb; }
+    tbody tr:nth-child(even) { background: #edf2ff; }
+
+    tbody tr {
+      transition: background 200ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    tbody tr:hover {
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(239,246,255,0.96));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    .status-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-intransit { background: #e0f2fe; color: #1d4ed8; }
+    .status-delivered { background: #dcfce7; color: #15803d; }
+    .status-alert     { background: #fee2e2; color: #b91c1c; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .dashboard-container {
+        padding: 20px 16px 24px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .nav-menu {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 20px 10px;
+      }
+      .dashboard-container {
+        border-radius: 18px;
+      }
+      .content-header h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-container">
+
+    <!-- Navigation -->
+    <header class="topbar">
+      <div class="brand">
+        <img src="/static/logo.jpg" alt="Logo">
+      </div>
+
+      <nav class="nav-menu">
+        <a href="/frontend/dashboard.html"><i class="fa fa-truck-fast"></i> Dashboard</a>
+        <a href="/frontend/shipments.html"><i class="fa fa-boxes-stacked"></i> Shipments</a>
+        <a href="/frontend/livestream.html" class="active"><i class="fa fa-satellite-dish"></i> Live Streaming</a>
+        <a href="/frontend/device.html"><i class="fa fa-sensor-on"></i> Device</a>
+        <a href="/frontend/signin&login.html"><i class="fa fa-user-group"></i> Users</a>
+        <button class="logout-btn" onclick="window.location.href='/logout'">
+          <i class="fa fa-right-from-bracket"></i> Logout
+        </button>
+      </nav>
+    </header>
+
+    <!-- Page Header -->
+    <div class="content-header">
+      <h1><i class="fa fa-satellite"></i> Live Streaming Table</h1>
+      <p>This table displays incoming live shipment data in real-time.</p>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon-circle">
+          <i class="fa fa-table"></i>
+        </div>
+        <h2>Shipment Live Data</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Shipment ID</th>
+              <th>Device ID</th>
+              <th>Location</th>
+              <th>Temp (°C)</th>
+              <th>Status</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="liveTableBody">
+            <!-- Auto-filled by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'scmxpert_live_stream_data';
+    const liveTableBody = document.getElementById('liveTableBody');
+
+    function getStatusClass(status) {
+      if (status === 'Delivered') return 'status-delivered';
+      if (status === 'Alert') return 'status-alert';
+      return 'status-intransit';
+    }
+
+    function addRow(entry) {
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td>${entry.shipmentId}</td>
+        <td>${entry.deviceId}</td>
+        <td>${entry.location}</td>
+        <td>${entry.temperature}</td>
+        <td>
+          <span class="status-pill ${getStatusClass(entry.status)}">${entry.status}</span>
+        </td>
+        <td>${entry.timestamp}</td>
+      `;
+
+      liveTableBody.appendChild(tr);
+    }
+
+    // Load stored live entries
+    window.addEventListener('DOMContentLoaded', () => {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          JSON.parse(stored).forEach(addRow);
+        } catch (e) {
+          console.error("Error parsing live data", e);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

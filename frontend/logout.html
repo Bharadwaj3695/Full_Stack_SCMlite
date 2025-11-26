@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Logout — SCMXpertLite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fonts & icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg-light: #f4f7fb;
+      --card-bg: #ffffff;
+      --primary-blue: #0ea5e9;  /* light blue */
+      --accent-green: #22c55e;  /* theme green */
+      --dark: #111827;          /* light black feel */
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --input-bg: #f9fafb;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.16);
+      --radius-xl: 22px;
+      --transition-fast: 0.25s ease;
+    }
+
+    /* ===== Global ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #e0f2fe, #f4f7fb);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      color: var(--dark);
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* ===== Dashboard Container ===== */
+    .dashboard-container {
+      width: 100%;
+      max-width: 1000px;
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      padding: 26px 32px 34px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-container::before {
+      content: "";
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(14,165,233,0.18), transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ===== Top Navigation Bar ===== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand img {
+      height: 60px;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.4);
+      object-fit: cover;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-menu a {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.95);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      transition:
+        background 0.3s ease,
+        color 0.3s ease,
+        transform 0.2s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+
+    .nav-menu a i {
+      font-size: 0.9rem;
+    }
+
+    .nav-menu a:hover {
+      background: radial-gradient(circle at left, var(--primary-blue), var(--accent-green));
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+      border-color: transparent;
+    }
+
+    .nav-menu a.active {
+      background: linear-gradient(135deg, var(--dark), #1f2937);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    /* ===== Content Headings & Text ===== */
+    .content h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 4px rgba(15, 23, 42, 0.12);
+      position: relative;
+    }
+
+    .content h2::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-140%);
+      width: 8px;
+      height: 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+    }
+
+    .content h2 i {
+      font-size: 1.2rem;
+      color: var(--primary-blue);
+    }
+
+    /* ===== Logout Panel ===== */
+    .logout-panel {
+      background: linear-gradient(135deg, #f9fafb, #eef2ff);
+      border-radius: 20px;
+      padding: 26px 28px 24px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+      max-width: 580px;
+      margin: 0 auto;
+      text-align: center;
+      border: 1px solid rgba(209, 213, 219, 0.7);
+      position: relative;
+      z-index: 1;
+    }
+
+    .logout-icon {
+      font-size: 3rem;
+      color: var(--primary-blue);
+      margin-bottom: 10px;
+      text-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .logout-panel p.main-text {
+      font-size: 1.05rem;
+      margin: 10px 0 6px;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .logout-panel p.sub-text {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+
+    /* ===== Buttons ===== */
+    .form-actions {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    button.btn-primary,
+    button.btn-danger,
+    a.btn-primary,
+    a.btn-danger {
+      padding: 12px 26px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.22);
+      transition:
+        background 0.3s ease,
+        transform 0.2s ease,
+        box-shadow 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--dark), #1f2937);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(34, 197, 94, 0.35);
+    }
+
+    .btn-danger {
+      background: #ffffff;
+      color: var(--muted);
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    .btn-danger:hover {
+      background: #f3f4f6;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.2);
+    }
+
+    .btn-primary i,
+    .btn-danger i {
+      font-size: 0.95rem;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        padding: 20px 16px 24px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .nav-menu {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <img src="/static/logo.jpg" alt="Logo" />
+      </div>
+      <nav class="nav-menu">
+        <a href="/frontend/dashboard.html"><i class="fa fa-truck-fast"></i> Dashboard</a>
+        <a href="/frontend/shipments.html"><i class="fa fa-boxes-stacked"></i> Shipments</a>
+        <a href="/frontend/livestream.html"><i class="fa fa-satellite-dish"></i> Live Streaming</a>
+        <a href="/frontend/device.html"><i class="fa fa-sensor-on"></i> Device</a>
+        <a href="/frontend/signin&login.html"><i class="fa fa-user-group"></i> Users</a>
+        <a href="/logout" class="active"><i class="fa fa-right-from-bracket"></i> Logout</a>
+      </nav>
+    </header>
+
+    <!-- Logout Content -->
+    <main class="content">
+      <div class="logout-panel">
+        <div class="logout-icon">
+          <i class="fa fa-right-from-bracket"></i>
+        </div>
+        <h2><i class="fa fa-shield-halved"></i> Ready to log out?</h2>
+        <p class="main-text">
+          You are about to sign out from <strong>SCMXpertLite</strong>.
+        </p>
+        <p class="sub-text">
+          Any unsaved changes may be lost. You can always log in again to continue tracking your shipments and devices.
+        </p>
+
+        <div class="form-actions">
+          <!-- Confirm logout (backend /logout route) -->
+          <a href="/logout" class="btn-primary">
+            <i class="fa fa-check"></i> Yes, Log Me Out
+          </a>
+
+          <!-- Cancel & go back -->
+          <a href="/frontend/dashboard.html" class="btn-danger">
+            <i class="fa fa-arrow-left"></i> Cancel & Go Back
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
