@@ -5,7 +5,7 @@
   <title>SCMXpertLite – Live Streaming Data</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Font (same as other themed pages) -->
+  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -14,9 +14,9 @@
     :root {
       --bg-light: #f4f7fb;
       --card-bg: #ffffff;
-      --primary-blue: #0ea5e9;  /* light blue */
-      --accent-green: #22c55e;  /* green accent */
-      --dark: #111827;          /* light black */
+      --primary-blue: #0ea5e9;
+      --accent-green: #22c55e;
+      --dark: #111827;
       --muted: #6b7280;
       --border: #e5e7eb;
       --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
@@ -24,7 +24,6 @@
       --transition-fast: 0.25s ease;
     }
 
-    /* ===== Global ===== */
     * {
       margin: 0;
       padding: 0;
@@ -42,11 +41,8 @@
       color: var(--dark);
     }
 
-    a {
-      text-decoration: none;
-    }
+    a { text-decoration: none; }
 
-    /* ===== Main Card Container ===== */
     .dashboard-container {
       width: 100%;
       max-width: 1100px;
@@ -77,12 +73,11 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ===== Top Navigation Bar ===== */
     .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
       position: relative;
       z-index: 1;
       gap: 20px;
@@ -144,13 +139,76 @@
       box-shadow: 0 12px 26px rgba(15, 23, 42, 0.45);
     }
 
-    .logout-btn {
-      border: none;
+    .logout-btn { border: none; }
+
+    .search-bar {
+      margin: 10px 0 18px;
+      position: relative;
+      z-index: 1;
     }
 
-    /* ===== Page Header ===== */
+    .search-bar form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search-bar label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-bar input {
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      font-size: 0.9rem;
+      min-width: 220px;
+      outline: none;
+      transition: border-color var(--transition-fast),
+                  box-shadow var(--transition-fast),
+                  background var(--transition-fast);
+    }
+
+    .search-bar input:focus {
+      border-color: var(--primary-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(14,165,233,0.18);
+    }
+
+    .search-bar button {
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--dark), #1f2933);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+      transition:
+        background var(--transition-fast),
+        transform 0.2s,
+        box-shadow var(--transition-fast);
+    }
+
+    .search-bar button:hover {
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(34, 197, 94, 0.35);
+    }
+
     .content-header {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       position: relative;
       z-index: 1;
     }
@@ -184,7 +242,6 @@
       margin-top: 4px;
     }
 
-    /* ===== Card (Table) ===== */
     .card {
       background: var(--card-bg);
       border-radius: 18px;
@@ -243,7 +300,6 @@
       color: var(--primary-blue);
     }
 
-    /* ===== Table ===== */
     .table-wrapper {
       max-height: 500px;
       overflow: auto;
@@ -271,7 +327,7 @@
     th, td {
       padding: 10px 12px;
       border-bottom: 1px solid #dde2f0;
-      text-align: left;
+      text-align: center;
     }
 
     th {
@@ -295,19 +351,22 @@
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
     }
 
-    .status-pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      display: inline-block;
+    .highlight-row {
+      background: linear-gradient(90deg, rgba(34,197,94,0.1), rgba(14,165,233,0.15)) !important;
+      box-shadow: 0 0 0 1px rgba(14,165,233,0.4);
     }
 
-    .status-intransit { background: #e0f2fe; color: #1d4ed8; }
-    .status-delivered { background: #dcfce7; color: #15803d; }
-    .status-alert     { background: #fee2e2; color: #b91c1c; }
+    .device-id-badge {
+      display: inline-block;
+      background: rgba(14,165,233,0.08);
+      color: #0369a1;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
 
-    /* ===== Responsive ===== */
     @media (max-width: 900px) {
       .dashboard-container {
         padding: 20px 16px 24px;
@@ -344,25 +403,43 @@
     <!-- Navigation -->
     <header class="topbar">
       <div class="brand">
-        <img src="/static/logo.jpg" alt="Logo">
+        <img src="../static/logo.jpg" alt="Logo">
       </div>
 
       <nav class="nav-menu">
         <a href="/frontend/dashboard.html"><i class="fa fa-truck-fast"></i> Dashboard</a>
         <a href="/frontend/shipments.html"><i class="fa fa-boxes-stacked"></i> Shipments</a>
-        <a href="/frontend/livestream.html" class="active"><i class="fa fa-satellite-dish"></i> Live Streaming</a>
+        <!-- 🔗 matches device.html link -->
+        <a href="/frontend/livestreaming.html" class="active"><i class="fa fa-satellite-dish"></i> Live Streaming</a>
         <a href="/frontend/device.html"><i class="fa fa-sensor-on"></i> Device</a>
-        <a href="/frontend/signin&login.html"><i class="fa fa-user-group"></i> Users</a>
-        <button class="logout-btn" onclick="window.location.href='/logout'">
+        <a href="/frontend/users.html"><i class="fa fa-user-group"></i> Users</a>
+        <button class="logout-btn" onclick="window.location.href='/frontend/logout.html'">
           <i class="fa fa-right-from-bracket"></i> Logout
         </button>
       </nav>
     </header>
 
+    <!-- Search bar under nav -->
+    <section class="search-bar">
+      <form id="search-form">
+        <label for="search-device">
+          <i class="fa fa-search"></i> Device Id
+        </label>
+        <input
+          type="text"
+          id="search-device"
+          placeholder="Type Device Id to highlight..."
+        />
+        <button type="submit">
+          <i class="fa fa-highlighter"></i> Highlight
+        </button>
+      </form>
+    </section>
+
     <!-- Page Header -->
     <div class="content-header">
       <h1><i class="fa fa-satellite"></i> Live Streaming Table</h1>
-      <p>This table displays incoming live shipment data in real-time.</p>
+      <p>This table displays all device records saved from the Device page.</p>
     </div>
 
     <!-- Table Card -->
@@ -371,23 +448,23 @@
         <div class="icon-circle">
           <i class="fa fa-table"></i>
         </div>
-        <h2>Shipment Live Data</h2>
+        <h2>Device Live Data</h2>
       </div>
 
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th>Shipment ID</th>
-              <th>Device ID</th>
-              <th>Location</th>
-              <th>Temp (°C)</th>
-              <th>Status</th>
+              <th>Device Id</th>
+              <th>Battery Level</th>
+              <th>First Sensor Temperature</th>
+              <th>Route From</th>
+              <th>Route To</th>
               <th>Timestamp</th>
             </tr>
           </thead>
           <tbody id="liveTableBody">
-            <!-- Auto-filled by JS -->
+            <!-- Filled by JS -->
           </tbody>
         </table>
       </div>
@@ -396,42 +473,89 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'scmxpert_live_stream_data';
-    const liveTableBody = document.getElementById('liveTableBody');
+    const STORAGE_KEY = "scmxpert_device_stream_data";
+    const liveTableBody = document.getElementById("liveTableBody");
+    const searchForm = document.getElementById("search-form");
+    const searchInput = document.getElementById("search-device");
 
-    function getStatusClass(status) {
-      if (status === 'Delivered') return 'status-delivered';
-      if (status === 'Alert') return 'status-alert';
-      return 'status-intransit';
+    function escapeHtml(text) {
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
     function addRow(entry) {
-      const tr = document.createElement('tr');
-
+      const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${entry.shipmentId}</td>
-        <td>${entry.deviceId}</td>
-        <td>${entry.location}</td>
-        <td>${entry.temperature}</td>
-        <td>
-          <span class="status-pill ${getStatusClass(entry.status)}">${entry.status}</span>
-        </td>
-        <td>${entry.timestamp}</td>
+        <td><span class="device-id-badge">${escapeHtml(entry.deviceId)}</span></td>
+        <td>${escapeHtml(entry.batteryLevel || "—")}</td>
+        <td>${escapeHtml(entry.sensorTemp || "—")}</td>
+        <td>${escapeHtml(entry.routeFrom || "—")}</td>
+        <td>${escapeHtml(entry.routeTo || "—")}</td>
+        <td>${escapeHtml(entry.timestamp || "—")}</td>
       `;
-
       liveTableBody.appendChild(tr);
     }
 
-    // Load stored live entries
-    window.addEventListener('DOMContentLoaded', () => {
+    function loadData() {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          JSON.parse(stored).forEach(addRow);
-        } catch (e) {
-          console.error("Error parsing live data", e);
-        }
+      if (!stored) return [];
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.error("Error parsing live stream data", e);
+        return [];
       }
+    }
+
+    function renderTable() {
+      const data = loadData();
+      liveTableBody.innerHTML = "";
+      data.forEach(addRow);
+    }
+
+    function clearHighlights() {
+      Array.from(liveTableBody.querySelectorAll("tr")).forEach((row) =>
+        row.classList.remove("highlight-row")
+      );
+    }
+
+    function highlightByDeviceId(deviceId) {
+      const searchVal = deviceId.trim().toLowerCase();
+      if (!searchVal) {
+        clearHighlights();
+        return;
+      }
+      clearHighlights();
+
+      const rows = Array.from(liveTableBody.querySelectorAll("tr"));
+      let firstMatch = null;
+
+      rows.forEach((row) => {
+        const cell = row.cells[0]; // Device Id column
+        if (!cell) return;
+        const text = cell.textContent.trim().toLowerCase();
+        if (text.includes(searchVal)) {
+          row.classList.add("highlight-row");
+          if (!firstMatch) firstMatch = row;
+        }
+      });
+
+      if (firstMatch) {
+        firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      renderTable();
+    });
+
+    searchForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      highlightByDeviceId(searchInput.value);
     });
   </script>
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Device Data Stream — SCMXpertLite</title>
+  <title>Device Data — SCMXpertLite</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Fonts & icons -->
@@ -144,6 +144,10 @@
       box-shadow: 0 12px 26px rgba(15, 23, 42, 0.45);
     }
 
+    .logout-btn {
+      border: none;
+    }
+
     /* ===== Content Header ===== */
     .content {
       position: relative;
@@ -178,12 +182,11 @@
       font-size: 0.95rem;
       color: var(--muted);
       margin-bottom: 18px;
-      font-weight: 400;
     }
 
     /* ===== Form layout ===== */
-    form.shipment-form {
-      margin-bottom: 10px;
+    form.device-form {
+      margin-bottom: 16px;
     }
 
     .form-grid {
@@ -195,7 +198,7 @@
 
     .form-grid > div {
       flex: 1;
-      min-width: 260px;
+      min-width: 240px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -216,7 +219,8 @@
     }
 
     input[type="text"],
-    input[type="date"],
+    input[type="number"],
+    input[type="datetime-local"],
     select,
     textarea {
       padding: 11px 14px;
@@ -231,8 +235,7 @@
                   background var(--transition-fast);
     }
 
-    input[type="text"]:focus,
-    input[type="date"]:focus,
+    input:focus,
     select:focus,
     textarea:focus {
       border-color: var(--primary-blue);
@@ -256,15 +259,14 @@
       width: 100%;
       border-radius: 14px;
       border-collapse: collapse;
-      min-width: 900px;
+      min-width: 700px;
     }
 
-    /* header */
     table.device-table thead th {
       position: sticky;
       top: 0;
       z-index: 4;
-      padding: 12px 10px;
+      padding: 10px 10px;
       text-align: center;
       font-weight: 600;
       font-size: 0.9rem;
@@ -272,44 +274,25 @@
       background: linear-gradient(90deg, #e5f2ff 0%, #f3f4ff 100%);
       box-shadow: 0 2px 0 rgba(148, 163, 184, 0.4);
       border-bottom: 0;
-      letter-spacing: 0.2px;
       text-transform: uppercase;
+      letter-spacing: 0.2px;
     }
 
-    table.device-table thead th:first-child { border-top-left-radius: 8px; }
-    table.device-table thead th:last-child  { border-top-right-radius: 8px; }
-
-    /* body rows */
-    table.device-table tbody tr {
-      transition: background 220ms ease,
-                  transform 180ms ease,
-                  box-shadow 180ms ease;
-      transform-origin: left center;
-      cursor: default;
-    }
-
-    /* zebra rows with slight blue tint */
     table.device-table tbody tr:nth-child(odd)  { background: #f5f7fb; }
     table.device-table tbody tr:nth-child(even) { background: #edf2ff; }
 
     table.device-table td {
-      padding: 11px 12px;
+      padding: 10px 10px;
       border-bottom: 1px solid #dde2f0;
-      color: #1f2933;
       font-size: 0.9rem;
-      vertical-align: middle;
       text-align: center;
+      color: #1f2933;
     }
 
-    /* hover effect */
     table.device-table tbody tr:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
       background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(239,246,255,0.96));
-    }
-
-    table.device-table tbody tr:hover td {
-      color: #020617;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
     }
 
     .device-id-badge {
@@ -320,7 +303,6 @@
       border-radius: 999px;
       font-weight: 600;
       font-size: 0.85rem;
-      box-shadow: inset 0 -2px 10px rgba(15, 23, 42, 0.04);
       border: 1px solid rgba(148, 163, 184, 0.5);
     }
 
@@ -332,15 +314,6 @@
     .col-temp {
       font-weight: 600;
       color: #0f766e;
-    }
-
-    @keyframes rowPulse {
-      0%   { box-shadow: 0 6px 18px rgba(34,197,94, 0.22); transform: translateY(-6px); }
-      50%  { box-shadow: 0 18px 40px rgba(14,165,233,0.18); transform: translateY(-2px); }
-      100% { box-shadow: none; transform: translateY(0); }
-    }
-    .pulse-row {
-      animation: rowPulse 900ms ease forwards;
     }
 
     /* ===== Buttons ===== */
@@ -385,8 +358,8 @@
     button.btn-danger {
       background: #f3f4f6;
       color: var(--dark);
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
       border: 1px solid var(--border);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
     }
 
     button.btn-danger:hover {
@@ -421,12 +394,6 @@
       }
 
       table.device-table {
-        min-width: 700px;
-      }
-    }
-
-    @media (max-width: 700px) {
-      table.device-table {
         min-width: 600px;
       }
     }
@@ -450,15 +417,16 @@
     <!-- Top Navigation Bar -->
     <header class="topbar">
       <div class="brand">
-        <img src="/static/logo.jpg" alt="Logo" />
+        <!-- adjust path as needed -->
+        <img src="../static/logo.jpg" alt="Logo" />
       </div>
       <nav class="nav-menu">
         <a href="/frontend/dashboard.html"><i class="fa fa-truck-fast"></i> Dashboard</a>
-        <a href="/frontend/createshipment.html"><i class="fa fa-file-circle-plus"></i> Create Shipment</a>
-        <a href="/frontend/shipments.html"><i class="fa fa-boxes-stacked"></i> My Shipments</a>
-        <a href="/frontend/device.html" class="active"><i class="fa fa-sensor-on"></i> Device Data</a>
-        <a href="/frontend/signin&login.html"><i class="fa fa-user-group"></i> Users</a>
-        <button class="logout-btn" onclick="window.location.href='/logout'">
+        <a href="/frontend/shipments.html"><i class="fa fa-boxes-stacked"></i> Shipments</a>
+        <a href="/frontend/Livestreaming.html"><i class="fa fa-satellite-dish"></i> Live Streaming</a>
+        <a href="/frontend/device.html" class="active"><i class="fa fa-sensor-on"></i> Device</a>
+        <a href="/frontend/users.html"><i class="fa fa-user-group"></i> Users</a>
+        <button class="logout-btn" onclick="window.location.href='/frontend/logout.html'">
           <i class="fa fa-right-from-bracket"></i> Log out
         </button>
       </nav>
@@ -466,152 +434,181 @@
 
     <!-- Device Data Form -->
     <main class="content">
-      <h2><i class="fa fa-microchip"></i> Device Data Stream</h2>
-      <p class="form-note">Please fill the device ID below. New readings will appear in the table.</p>
+      <h2><i class="fa fa-microchip"></i> Device Data Entry</h2>
+      <p class="form-note">
+        Fill the device details below. Saved records will be visible in the <strong>Live Streaming</strong> page.
+      </p>
 
-      <form id="device-form" method="POST" action="/device-data" class="shipment-form">
+      <form id="device-form" class="device-form">
         <div class="form-grid">
           <div>
             <label for="device_id"><i class="fa fa-hashtag"></i> Device Id*</label>
-            <input id="device_id" type="text" name="device_id" required />
+            <input id="device_id" type="text" required />
+          </div>
+
+          <div>
+            <label for="battery_level"><i class="fa fa-battery-half"></i> Battery Level</label>
+            <input id="battery_level" type="number" step="0.1" placeholder="e.g. 7.5" />
+          </div>
+
+          <div>
+            <label for="sensor_temp"><i class="fa fa-temperature-half"></i> First Sensor Temperature (°C)</label>
+            <input id="sensor_temp" type="number" step="0.1" placeholder="e.g. 21.5" />
+          </div>
+
+          <div>
+            <label for="route_from"><i class="fa fa-location-arrow"></i> Route From</label>
+            <input id="route_from" type="text" placeholder="e.g. Hyderabad, India" />
+          </div>
+
+          <div>
+            <label for="route_to"><i class="fa fa-location-dot"></i> Route To</label>
+            <input id="route_to" type="text" placeholder="e.g. Louisville, USA" />
+          </div>
+
+          <div>
+            <label for="timestamp"><i class="fa fa-clock"></i> Timestamp</label>
+            <input id="timestamp" type="datetime-local" />
           </div>
         </div>
 
-        <!-- Device table -->
-        <div class="device-table-wrap" aria-live="polite">
-          <div style="overflow:auto;">
-            <table class="device-table" id="device-table" role="table">
-              <thead>
-                <tr>
-                  <th>Device Id</th>
-                  <th>Battery Level</th>
-                  <th>First Sensor Temperature</th>
-                  <th>Route From</th>
-                  <th>Route To</th>
-                  <th>Timestamp</th>
-                </tr>
-              </thead>
-              <tbody id="device-tbody">
-                <!-- sample rows -->
-                <tr>
-                  <td><span class="device-id-badge">4587434500</span></td>
-                  <td class="col-battery">6.0</td>
-                  <td class="col-temp">19.0 °C</td>
-                  <td>Mumbai, India</td>
-                  <td>Louisville, USA</td>
-                  <td>2023-02-06 10:19 AM</td>
-                </tr>
-                <tr>
-                  <td><span class="device-id-badge">4587434500</span></td>
-                  <td class="col-battery">2.9</td>
-                  <td class="col-temp">22.4 °C</td>
-                  <td>Mumbai, India</td>
-                  <td>Louisville, USA</td>
-                  <td>2023-02-06 12:49 PM</td>
-                </tr>
-                <tr>
-                  <td><span class="device-id-badge">4587434500</span></td>
-                  <td class="col-battery">5.6</td>
-                  <td class="col-temp">19.7 °C</td>
-                  <td>Hyderabad, India</td>
-                  <td>Louisville, USA</td>
-                  <td>2023-02-06 01:19 PM</td>
-                </tr>
-                <tr>
-                  <td><span class="device-id-badge">4587434500</span></td>
-                  <td class="col-battery">3.0</td>
-                  <td class="col-temp">25.0 °C</td>
-                  <td>Chennai, India</td>
-                  <td>Louisville, USA</td>
-                  <td>2023-02-06 01:49 PM</td>
-                </tr>
-                <tr>
-                  <td><span class="device-id-badge">4587434500</span></td>
-                  <td class="col-battery">9.4</td>
-                  <td class="col-temp">20.7 °C</td>
-                  <td>Bangalore, India</td>
-                  <td>Louisville, USA</td>
-                  <td>2023-02-06 03:49 PM</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="form-actions">
-            <button id="save-btn" type="submit" class="btn-primary">
-              <i class="fa fa-check"></i> SAVE DEVICE DATA
-            </button>
-            <button type="reset" class="btn-danger">
-              <i class="fa fa-eraser"></i> CLEAR DETAILS
-            </button>
-          </div>
+        <div class="form-actions">
+          <button id="save-btn" type="submit" class="btn-primary">
+            <i class="fa fa-check"></i> Save Device Data
+          </button>
+          <button type="reset" class="btn-danger">
+            <i class="fa fa-eraser"></i> Clear
+          </button>
         </div>
       </form>
+
+      <!-- Optional: show saved rows on this page also -->
+      <div class="device-table-wrap" aria-live="polite">
+        <div style="overflow:auto;">
+          <table class="device-table" id="device-table">
+            <thead>
+              <tr>
+                <th>Device Id</th>
+                <th>Battery Level</th>
+                <th>First Sensor Temperature</th>
+                <th>Route From</th>
+                <th>Route To</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="device-tbody">
+              <!-- Filled from localStorage -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </main>
   </div>
 
   <script>
-    (function(){
-      const form = document.getElementById('device-form');
-      const tbody = document.getElementById('device-tbody');
-      const saveBtn = document.getElementById('save-btn');
+    (function () {
+      const STORAGE_KEY = "scmxpert_device_stream_data";
 
-      function safeVal(id) {
-        const el = document.getElementById(id);
-        return el && el.value ? el.value : '—';
+      const form = document.getElementById("device-form");
+      const tbody = document.getElementById("device-tbody");
+      const saveBtn = document.getElementById("save-btn");
+
+      function loadData() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (!stored) return [];
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error("Error parsing stored device data", e);
+          return [];
+        }
       }
 
-      function createRowFromForm() {
-        const id = safeVal('device_id');
-        // placeholders for other values (you can connect real fields later)
-        const battery = '—';
-        const temp = '—';
-        const from = '—';
-        const to = '—';
-        const ts = new Date().toLocaleString();
+      function saveData(arr) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+      }
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><span class="device-id-badge">${escapeHtml(id)}</span></td>
-          <td class="col-battery">${escapeHtml(battery)}</td>
-          <td class="col-temp">${escapeHtml(temp)}</td>
-          <td>${escapeHtml(from)}</td>
-          <td>${escapeHtml(to)}</td>
-          <td>${escapeHtml(ts)}</td>
-        `;
-        return tr;
+      function renderTable() {
+        const data = loadData();
+        tbody.innerHTML = "";
+        data.forEach((entry) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><span class="device-id-badge">${escapeHtml(entry.deviceId)}</span></td>
+            <td class="col-battery">${escapeHtml(entry.batteryLevel || "—")}</td>
+            <td class="col-temp">${escapeHtml(entry.sensorTemp || "—")}</td>
+            <td>${escapeHtml(entry.routeFrom || "—")}</td>
+            <td>${escapeHtml(entry.routeTo || "—")}</td>
+            <td>${escapeHtml(entry.timestamp || "—")}</td>
+          `;
+          tbody.appendChild(tr);
+        });
       }
 
       function escapeHtml(text) {
-        return String(text)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
+        return String(text ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
       }
 
-      form.addEventListener('submit', function(e){
+      function getFormEntry() {
+        const deviceId = document.getElementById("device_id").value.trim();
+        const batteryLevel = document.getElementById("battery_level").value.trim();
+        const sensorTemp = document.getElementById("sensor_temp").value.trim();
+        const routeFrom = document.getElementById("route_from").value.trim();
+        const routeTo = document.getElementById("route_to").value.trim();
+        const tsRaw = document.getElementById("timestamp").value;
+
+        let timestamp = tsRaw;
+        if (!tsRaw) {
+          timestamp = new Date().toLocaleString();
+        }
+
+        return {
+          deviceId,
+          batteryLevel,
+          sensorTemp,
+          routeFrom,
+          routeTo,
+          timestamp
+        };
+      }
+
+      form.addEventListener("submit", function (e) {
         e.preventDefault();
+        const entry = getFormEntry();
+        if (!entry.deviceId) {
+          alert("Device Id is required");
+          return;
+        }
 
-        const newRow = createRowFromForm();
-        tbody.insertBefore(newRow, tbody.firstChild);
-        newRow.classList.add('pulse-row');
-        setTimeout(() => newRow.classList.remove('pulse-row'), 1000);
+        const data = loadData();
+        data.push(entry);
+        saveData(data);
 
-        saveBtn.classList.add('saved');
-        setTimeout(() => saveBtn.classList.remove('saved'), 650);
+        renderTable();
 
-        // Uncomment if you want to clear the Device Id after save:
+        saveBtn.classList.add("saved");
+        setTimeout(() => saveBtn.classList.remove("saved"), 650);
+
+        // keep form values or clear if you want:
         // form.reset();
       });
 
-      form.addEventListener('keydown', function(ev){
-        if (ev.key === 'Enter' && (ev.target.tagName !== 'TEXTAREA')) {
+      // prevent Enter on inputs from accidentally reloading
+      form.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" && ev.target.tagName !== "TEXTAREA") {
           ev.preventDefault();
-          form.dispatchEvent(new Event('submit', {cancelable: true}));
+          form.dispatchEvent(new Event("submit", { cancelable: true }));
         }
       });
+
+      // initial load
+      renderTable();
     })();
   </script>
 </body>

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login / Signin UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- BoxIcons -->
+  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
+  <style>
+    :root {
+      --bg-light: #f4f7fb;
+      --card-bg: #ffffff;
+      --primary-blue: #0ea5e9;  /* light blue */
+      --accent-green: #22c55e;  /* your color */
+      --dark: #111827;          /* light black feel */
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --input-bg: #f9fafb;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
+      --radius-xl: 18px;
+      --transition-fast: 0.25s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top left, #e0f2fe, #f4f7fb);
+      color: var(--dark);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 950px;
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      position: relative;
+      padding: 28px 32px;
+      gap: 16px;
+    }
+
+    /* Common form box styles */
+    .form-box {
+      position: relative;
+      padding: 10px 20px;
+      z-index: 2;
+    }
+
+    .form-box h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-box h2::before {
+      content: "";
+      width: 8px;
+      height: 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+    }
+
+    .input-box {
+      position: relative;
+      margin: 12px 0 20px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 12px 44px 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      outline: none;
+      font-size: 14px;
+      transition: var(--transition-fast);
+      color: var(--dark);
+    }
+
+    .input-box input:focus {
+      border-color: var(--primary-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.1);
+    }
+
+    .input-box label {
+      position: absolute;
+      top: 50%;
+      left: 14px;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--muted);
+      pointer-events: none;
+      transition: var(--transition-fast);
+      background: transparent;
+    }
+
+    .input-box input:focus + label,
+    .input-box input:valid + label {
+      top: 4px;
+      font-size: 11px;
+      color: var(--primary-blue);
+    }
+
+    .input-box box-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 11px 0;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--dark), #1f2933);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition-fast);
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+    }
+
+    .regi-link {
+      text-align: center;
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .regi-link a {
+      font-weight: 600;
+      color: var(--primary-blue);
+      text-decoration: none;
+      margin-left: 4px;
+      position: relative;
+    }
+
+    .regi-link a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 2px;
+      background: var(--accent-green);
+      transition: var(--transition-fast);
+    }
+
+    .regi-link a:hover::after {
+      width: 100%;
+    }
+
+    .regi-link a:hover {
+      color: var(--accent-green);
+    }
+
+    /* Small row for Forgot Password link */
+    .forgot-row {
+      margin-top: -8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .forgot-row a {
+      font-size: 12px;
+      color: var(--primary-blue);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .forgot-row a:hover {
+      color: var(--accent-green);
+    }
+
+    /* Right side info content */
+    .info-content {
+      background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.15), transparent 60%),
+                  radial-gradient(circle at bottom left, rgba(34, 197, 94, 0.18), transparent 55%);
+   	border-radius: 18px;
+      padding: 22px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .info-content h2 {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .info-content p {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 280px;
+      line-height: 1.4;
+    }
+
+    .info-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.08);
+      color: #16a34a;
+      font-weight: 500;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(14, 165, 233, 0.08);
+      color: #0284c7;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+
+    /* LOGIN/REGISTER TOGGLE LOGIC (default: show Login) */
+    .form-box.Register,
+    .info-content.Register {
+      display: none;
+    }
+
+    .container.active .form-box.Login,
+    .container.active .info-content.Login {
+      display: none;
+    }
+
+    .container.active .form-box.Register,
+    .container.active .info-content.Register {
+      display: block;
+    }
+
+    /* ===== Forgot Password Modal ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .overlay.active {
+      display: flex;
+    }
+
+    .forgot-modal {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: var(--shadow-soft);
+      padding: 20px 22px 18px;
+      position: relative;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+    }
+
+    .forgot-modal h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .forgot-modal p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .forgot-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .forgot-close:hover {
+      color: var(--dark);
+    }
+
+    .forgot-section {
+      margin-top: 8px;
+    }
+
+    .forgot-section.hidden {
+      display: none;
+    }
+
+    .forgot-section .input-box {
+      margin: 10px 0 16px;
+    }
+
+    .forgot-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-small {
+      padding: 8px 18px;
+      font-size: 13px;
+      width: auto;
+    }
+
+    @media (max-width: 780px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 24px 18px;
+      }
+
+      .info-content {
+        order: -1;
+        margin-bottom: 8px;
+      }
+
+      .info-content p {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        box-shadow: none;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .info-content {
+        border-radius: 16px;
+      }
+
+      .form-box h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Login Form -->
+    <div class="form-box Login">
+      <h2>Login</h2>
+      <form action="#" id="loginForm">
+        <div class="input-box">
+          <input type="text" id="loginUsername" required />
+          <label>Username / Email</label>
+          <box-icon type="solid" name="user" color="gray"></box-icon>
+        </div>
+
+        <div class="input-box">
+          <input type="password" id="loginPassword" required />
+          <label>Password</label>
+          <box-icon name="lock-alt" type="solid" color="gray"></box-icon>
+        </div>
+
+        <!-- Forgot password link -->
+        <div class="forgot-row">
+          <a href="#" id="forgotPasswordLink">Forgot password?</a>
+        </div>
+
+        <div class="input-box">
+          <button class="btn" type="submit">
+            Login
+          </button>
+        </div>
+
+        <div class="regi-link">
+          New here?
+          <a href="#" class="SignUpLink">Create account</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Login Info -->
+    <div class="info-content Login">
+      <span class="info-tag">
+        <box-icon name="package" size="xs"></box-icon>
+        Smart Shipment Portal
+      </span>
+      <h2>Welcome back!</h2>
+      <p>
+        Track your shipments, manage orders, and access real-time status in one secure dashboard.
+      </p>
+      <span class="pill-badge">
+        <box-icon name="shield-plus" size="xs"></box-icon>
+        Secured for medical & logistics data
+      </span>
+    </div>
+
+    <!-- Register Form -->
+    <div class="form-box Register">
+      <h2>SIGNIN</h2>
+      <form action="#" id="registerForm">
+        <div class="input-box">
+          <input type="text" id="regUsername" required />
+          <label>Username</label>
+          <box-icon type="solid" name="user" color="gray"></box-icon>
+        </div>
+
+        <div class="input-box">
+          <input type="email" id="regEmail" required />
+          <label>Email</label>
+          <box-icon name="envelope" type="solid" color="gray"></box-icon>
+        </div>
+
+        <div class="input-box">
+          <input type="password" id="regPassword" required />
+          <label>Password</label>
+          <box-icon name="lock-alt" type="solid" color="gray"></box-icon>
+        </div>
+
+        <div class="input-box">
+          <button class="btn" type="submit">
+            Sign up
+          </button>
+        </div>
+
+        <div class="regi-link">
+          Already registered?
+          <a href="#" class="SignInLink">Login</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Register Info -->
+    <div class="info-content Register">
+      <span class="info-tag">
+        <box-icon name="first-aid" size="xs"></box-icon>
+        Medicine & Cold-chain Ready
+      </span>
+      <h2>Welcome!</h2>
+      <p>
+        Create your account to start managing medical shipments, orders, and live delivery timelines.
+      </p>
+      <span class="pill-badge">
+        <box-icon name="time-five" size="xs"></box-icon>
+        24×7 monitoring & support
+      </span>
+    </div>
+  </div>
+
+  <!-- ===== Forgot Password Modal ===== -->
+  <div class="overlay" id="forgotOverlay">
+    <div class="forgot-modal">
+      <button class="forgot-close" id="forgotClose">&times;</button>
+      <h3>Reset Password</h3>
+      <p>Follow the steps below to reset your password.</p>
+
+      <!-- Step 1: Email -->
+      <div class="forgot-section" id="stepEmail">
+        <div class="input-box">
+          <input type="email" id="fpEmail" required />
+          <label>Email address</label>
+        </div>
+        <div class="forgot-actions">
+          <button type="button" class="btn btn-small" id="sendOtpBtn">
+            Send OTP
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: OTP -->
+      <div class="forgot-section hidden" id="stepOtp">
+        <p>We have sent a 5 digit OTP to your email (for demo it will show in popup).</p>
+        <div class="input-box">
+          <input type="text" id="fpOtp" maxlength="5" required />
+          <label>Enter OTP</label>
+        </div>
+        <div class="forgot-actions">
+          <button type="button" class="btn btn-small" id="verifyOtpBtn">
+            Verify OTP
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: New Password -->
+      <div class="forgot-section hidden" id="stepNewPass">
+        <div class="input-box">
+          <input type="password" id="fpNewPass" required />
+          <label>New Password</label>
+        </div>
+        <div class="input-box">
+          <input type="password" id="fpConfirmPass" required />
+          <label>Confirm New Password</label>
+        </div>
+        <div class="forgot-actions">
+          <button type="button" class="btn btn-small" id="resetPassBtn">
+            Reset Password
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const container = document.querySelector('.container');
+    const LoginLink = document.querySelector('.SignInLink');
+    const RegisterLink = document.querySelector('.SignUpLink');
+
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    // New: references for login/register inputs
+    const loginUsername = document.getElementById('loginUsername');
+    const loginPassword = document.getElementById('loginPassword');
+
+    const regUsername = document.getElementById('regUsername');
+    const regEmail = document.getElementById('regEmail');
+    const regPassword = document.getElementById('regPassword');
+
+    const STORAGE_KEY = 'scmxpert_single_user';
+
+    // Toggle between Login and Register
+    if (RegisterLink) {
+      RegisterLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        container.classList.add('active');
+      });
+    }
+
+    if (LoginLink) {
+      LoginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        container.classList.remove('active');
+      });
+    }
+
+    // Register form submit -> save user + popup + return to login
+    if (registerForm) {
+      registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const userObj = {
+          username: regUsername.value.trim(),
+          email: regEmail.value.trim(),
+          password: regPassword.value.trim(),
+        };
+
+        if (!userObj.username || !userObj.email || !userObj.password) {
+          alert("Please fill all fields");
+          return;
+        }
+
+        // store user in localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(userObj));
+
+        alert("The new user has been created");
+        container.classList.remove('active');
+
+        // optional: prefill login username with registered username
+        loginUsername.value = userObj.username;
+      });
+    }
+
+    // Login form submit -> check credentials
+    if (loginForm) {
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (!stored) {
+          alert("No user found. Please create an account first.");
+          return;
+        }
+
+        let userObj;
+        try {
+          userObj = JSON.parse(stored);
+        } catch (err) {
+          console.error(err);
+          alert("Something went wrong. Please create your account again.");
+          return;
+        }
+
+        const enteredUser = loginUsername.value.trim();
+        const enteredPass = loginPassword.value.trim();
+
+        // allow login by username OR email
+        const userMatch =
+          enteredUser === userObj.username || enteredUser === userObj.email;
+
+        if (userMatch && enteredPass === userObj.password) {
+          alert("The user has been logged in");
+          window.location.href = "dashboard.html";  // change path if needed
+        } else {
+          alert("Invalid username/email or password");
+        }
+      });
+    }
+
+    // ===== Forgot password logic =====
+    const forgotLink = document.getElementById('forgotPasswordLink');
+    const overlay = document.getElementById('forgotOverlay');
+    const closeBtn = document.getElementById('forgotClose');
+
+    const stepEmail = document.getElementById('stepEmail');
+    const stepOtp = document.getElementById('stepOtp');
+    const stepNewPass = document.getElementById('stepNewPass');
+
+    const sendOtpBtn = document.getElementById('sendOtpBtn');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    const resetPassBtn = document.getElementById('resetPassBtn');
+
+    const fpEmail = document.getElementById('fpEmail');
+    const fpOtp = document.getElementById('fpOtp');
+    const fpNewPass = document.getElementById('fpNewPass');
+    const fpConfirmPass = document.getElementById('fpConfirmPass');
+
+    let generatedOtp = null;
+
+    function openForgotModal() {
+      overlay.classList.add('active');
+      // reset steps
+      stepEmail.classList.remove('hidden');
+      stepOtp.classList.add('hidden');
+      stepNewPass.classList.add('hidden');
+      fpEmail.value = "";
+      fpOtp.value = "";
+      fpNewPass.value = "";
+      fpConfirmPass.value = "";
+    }
+
+    function closeForgotModal() {
+      overlay.classList.remove('active');
+    }
+
+    if (forgotLink) {
+      forgotLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        openForgotModal();
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        closeForgotModal();
+      });
+    }
+
+    // Step 1: Send OTP
+    if (sendOtpBtn) {
+      sendOtpBtn.addEventListener('click', function () {
+        const email = fpEmail.value.trim();
+        if (!email) {
+          alert("Please enter your email address");
+          return;
+        }
+
+        // Optional: check email matches registered user
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          try {
+            const userObj = JSON.parse(stored);
+            if (email !== userObj.email) {
+              alert("This email is not registered");
+              return;
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }
+
+        // generate 5 digit OTP
+        generatedOtp = Math.floor(10000 + Math.random() * 90000).toString();
+        // show OTP in popup (demo)
+        alert("Your OTP is: " + generatedOtp);
+
+        stepEmail.classList.add('hidden');
+        stepOtp.classList.remove('hidden');
+      });
+    }
+
+    // Step 2: Verify OTP
+    if (verifyOtpBtn) {
+      verifyOtpBtn.addEventListener('click', function () {
+        const entered = fpOtp.value.trim();
+        if (!entered) {
+          alert("Please enter the OTP");
+          return;
+        }
+        if (entered !== generatedOtp) {
+          alert("Invalid OTP. Please try again.");
+          return;
+        }
+        alert("OTP verified successfully");
+        stepOtp.classList.add('hidden');
+        stepNewPass.classList.remove('hidden');
+      });
+    }
+
+    // Step 3: Reset Password
+    if (resetPassBtn) {
+      resetPassBtn.addEventListener('click', function () {
+        const p1 = fpNewPass.value.trim();
+        const p2 = fpConfirmPass.value.trim();
+        if (!p1 || !p2) {
+          alert("Please fill both password fields");
+          return;
+        }
+        if (p1 !== p2) {
+          alert("Passwords do not match");
+          return;
+        }
+
+        // update stored password if user exists
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          try {
+            const userObj = JSON.parse(stored);
+            userObj.password = p1;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(userObj));
+          } catch (err) {
+            console.error(err);
+          }
+        }
+
+        alert("New password has been created successfully");
+        closeForgotModal();
+      });
+    }
+  </script>
+</body>
+</html>

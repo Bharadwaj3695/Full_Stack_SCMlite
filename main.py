@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from backend import users, shipments, Device  # match file names/case
 from pymongo import MongoClient
@@ -20,3 +21,8 @@ app = FastAPI()
 app.include_router(users.router)
 app.include_router(shipments.router)
 app.include_router(Device.router)
+
+# (optional) when you visit http://127.0.0.1:8000/ it will open users.html
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/frontend/users.html")

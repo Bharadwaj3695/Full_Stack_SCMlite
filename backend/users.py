@@ -1,11 +1,32 @@
-from fastapi import APIRouter, Form, HTTPException
-from typing import Dict, Any
+from fastapi import APIRouter, Form, HTTPException, Depends, status
+from typing import Dict, Any, Optional
 import hashlib
 import re
+import os
+from datetime import datetime, timedelta
+
+from jose import jwt
+from jose.exceptions import JWTError
+from fastapi.security import OAuth2PasswordBearer
+
 from backend.app import get_collections
 
-
 router = APIRouter(prefix="/api/users", tags=["users"])
+
+# ==========================
+# JWT CONFIG
+# ==========================
+# In production, keep this in .env and load with os.getenv
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-secret-change-me")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60  # 1 hour
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/login")
+
+
+# ==========================
+# Helper functions
+# ==========================
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -21,6 +42,18 @@ def validate_password(password: str) -> bool:
         and re.search(r"[0-9]", password)
         and re.search(r"[!@#$%^&*(),.?\":{}|<>]", password)
     )
+
+def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+# ==========================
+# SIGNUP
+# ==========================
 
 @router.post("/signup")
 def signup(
@@ -45,7 +78,6 @@ def signup(
     cols = get_collections()
     users_col = cols["users"]
 
-    # check existing username or email (case-insensitive for email)
     existing = users_col.find_one({"$or": [{"username": username}, {"email": email_l}]})
     if existing:
         raise HTTPException(status_code=400, detail="Username or email already exists")
@@ -54,6 +86,11 @@ def signup(
     users_col.insert_one({"username": username, "email": email_l, "password": hashed})
 
     return {"message": f"User {username} signed up successfully"}
+
+
+# ==========================
+# LOGIN → returns JWT
+# ==========================
 
 @router.post("/login")
 def login(
@@ -66,7 +103,6 @@ def login(
     cols = get_collections()
     users_col = cols["users"]
 
-    # Try to find by username (exact) OR email (lowercased)
     user = users_col.find_one({"$or": [{"username": ident}, {"email": ident_email}]})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -75,6 +111,65 @@ def login(
     if stored_hash != hash_password(password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    # don't return password
-    user_safe = {k: v for k, v in user.items() if k != "password" and k != "_id"}
-    return {"message": "Login successful", "user": user_safe}
+    # Create JWT token
+    access_token = create_access_token(
+        data={"sub": user["username"], "email": user["email"]}
+    )
+
+    # Don't expose password or _id
+    user_safe = {k: v for k, v in user.items() if k not in ("password", "_id")}
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user_safe,
+        "message": "Login successful",
+    }
+
+
+# ==========================
+# DEPENDENCY: CURRENT USER
+# ==========================
+
+def get_current_user(token: str = Depends(oauth2_scheme)) -> Dict[str, Any]:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token payload",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    cols = get_collections()
+    users_col = cols["users"]
+    user = users_col.find_one({"username": username})
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # strip sensitive fields
+    return {k: v for k, v in user.items() if k not in ("password",)}
+
+
+# ==========================
+# PROTECTED ROUTE EXAMPLE
+# ==========================
+
+@router.get("/me")
+def read_me(current_user: Dict[str, Any] = Depends(get_current_user)):
+    """
+    Example protected endpoint.
+    Requires Authorization: Bearer <token>
+    """
+    return {"user": current_user}
